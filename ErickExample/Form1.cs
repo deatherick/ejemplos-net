@@ -1,8 +1,10 @@
 ﻿using Castle.Windsor;
 using System;
 using System.Windows.Forms;
-using ErickExample.Entities;
-using ErickExample.Installers;
+using MvcBusinessLogic;
+using MvcBusinessLogic.Classes;
+using MvcBusinessLogic.Installers;
+using MvcDataAccess.Entities;
 
 namespace ErickExample
 {
@@ -33,12 +35,17 @@ namespace ErickExample
 
             Console.WriteLine(mainThing.Object1.SomeObject.ToString());
             */
-            var loginObject = container.Resolve<LoginImplement>();
+            var loginObject = container.Resolve<LoginController>();
 
             var response = loginObject.Login(identity, password);
             if (response.Success)
             {
-                MessageBox.Show(@"Bienvenido " + ((Person)response.Object).Name);
+                if (MessageBox.Show(@"Bienvenido " + ((Person)response.Object).Name,@"Aceptar", MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
+                {
+                    Visible = false;
+                    var dashboard = new Dashboard();
+                    dashboard.ShowDialog();
+                }
             }
             else
             {
@@ -57,7 +64,7 @@ namespace ErickExample
                 new UrlInstaller()
                 );
             var urlObject = container.Resolve<HtmlTitleRetriever>();
-            var title = urlObject.GetTitle(new Uri("http://dotnetslackers.com/articles/designpatterns/InversionOfControlAndDependencyInjectionWithCastleWindsorContainerPart1.aspx"));
+            var title = urlObject.GetTitle(new Uri("https://www.google.com.gt"));
             MessageBox.Show(title);
             container.Release(urlObject);
         }

@@ -41,40 +41,37 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\HttpFileDownloader.cs" />
-    <Compile Include="Classes\LoginController.cs" />
-    <Compile Include="Classes\Security.cs" />
-    <Compile Include="Classes\StringParsingTitleScraper.cs" />
-    <Compile Include="Entities\Person.cs" />
-    <Compile Include="HtmlTitleRetriever.cs" />
-    <Compile Include="Installers\UrlInstaller.cs" />
-    <Compile Include="Installers\LoginInstaller.cs" />
-    <Compile Include="Interfaces\IFileDownloader.cs" />
-    <Compile Include="Interfaces\ISecurity.cs" />
-    <Compile Include="Interfaces\ITitleScraper.cs" />
-    <Compile Include="LoginImplement.cs" />
-    <Compile Include="Entities\Response.cs" />
-    <Compile Include="Classes\Dependency1.cs" />
-    <Compile Include="Classes\Dependency2.cs" />
-    <Compile Include="Installers\DependenciesInstaller.cs" />
+    <Compile Include="Dashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dashboard.Designer.cs">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IDependency1.cs" />
-    <Compile Include="Interfaces\IDependency2.cs" />
-    <Compile Include="Interfaces\ILoginController.cs" />
-    <Compile Include="Main.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Dashboard.resx">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -100,6 +97,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MvcBusinessLogic\MvcBusinessLogic.csproj">
+      <Project>{ee3e6709-4301-4ded-99b5-ac10ea99e10c}</Project>
+      <Name>MvcBusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvcDataAccess\MvcDataAccess.csproj">
+      <Project>{2230eeb9-ee6c-4c73-80a9-dab9df07e90b}</Project>
+      <Name>MvcDataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
