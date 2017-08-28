@@ -16,7 +16,6 @@ namespace MvcBusinessLogic.Classes
             {
                 return string.Empty;
             }
-           
         }
     }
 }

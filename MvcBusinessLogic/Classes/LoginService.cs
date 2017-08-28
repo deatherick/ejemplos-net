@@ -25,4 +25,18 @@ namespace MvcBusinessLogic.Classes
         }
 
     }
+
+    internal class LoginServiceDuplicate : ILoginService
+    {
+
+        public Response Login(string identity, string password)
+        {
+            return new Response(Response.ResponseCode.Success, true, "Usuario logueado", new Person(1, "Erick Morales", DateTime.Today));
+        }
+
+        public bool CheckIdentity(string identity)
+        {
+            return true;
+        }
+    }
 }

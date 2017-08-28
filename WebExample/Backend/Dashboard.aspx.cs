@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Castle.Windsor;
@@ -18,33 +19,46 @@ namespace WebExample.Backend
             var container = new WindsorContainer();
             container.Install(
                 new SchoolInstaller()
-                );
+            );
             var courseObject = container.Resolve<CourseController>();
             var departmentObject = container.Resolve<DepartmentController>();
 
-
-
-            // Define a query that returns all Department  
-            // objects and course objects, ordered by name.
-            var departments = departmentObject.SelectAll();
+            
             try
             {
-                // Bind the ComboBox control to the query, 
-                // which is executed during data binding.
-                // To prevent the query from being executed multiple times during binding, 
-                // it is recommended to bind controls to the result of the Execute method. 
+               
                 if (IsPostBack)
                 {
                     ddlDepartments.SelectedIndex = ddlDepartments.SelectedIndex;
                 }
                 if (!Page.IsPostBack)
                 {
-                    ddlDepartments.DataValueField = "DepartmentID";
-                    ddlDepartments.DataTextField = "Name";
-                    ddlDepartments.DataSource = departments;
-                    ddlDepartments.DataBind();
+                    // Define a query that returns all Department
+                    // objects and course objects, ordered by name.
+                    var departments = departmentObject.SelectAll();
+                    // Bind the ComboBox control to the query,
+                    // which is executed during data binding.
+                    // To prevent the query from being executed multiple times during binding,
+                    // it is recommended to bind controls to the result of the Execute method.
+                    //ddlDepartments.DataValueField = "Value";
+                    //ddlDepartments.DataTextField = "Text";
+                    //ddlDepartments.Attributes.Add("data-prueba", "pruebaErick");
+                    var listItems = new ListItemCollection();
+                    //ddlDepartments.ViewStateMode = ViewStateMode.Enabled;
+                    foreach (var department in departments)
+                    {
+                        var itemList = new ListItem
+                        {
+                            Text = department.Name,
+                            Value = department.DepartmentID.ToString()
+                        };
+                        itemList.Attributes.Add("data-budget", department.Budget.ToString(CultureInfo.InvariantCulture));
+                        ddlDepartments.Items.Add(itemList);
+                    }
+                    //ddlDepartments.DataSource = listItems;
+                    //ddlDepartments.DataBind();
 
-                    var selectedValue = int.Parse(ddlDepartments.SelectedItem.Value);
+                    var selectedValue = int.Parse(ddlDepartments.SelectedValue);
                     //Get the object for the selected department.
                     var courses = courseObject.Select(selectedValue);
                     //Bind the grid view to the collection of Course objects
@@ -61,7 +75,6 @@ namespace WebExample.Backend
                     BindData();
                 }
 
-                
 
             }
             catch (Exception ex)
@@ -81,6 +94,7 @@ namespace WebExample.Backend
                 var courseObject = container.Resolve<CourseController>();
                 ddlDepartments.SelectedIndex = ddlDepartments.SelectedIndex;
                 var selectedValue = int.Parse(ddlDepartments.SelectedItem.Value);
+                var budget = ddlDepartments.SelectedItem.Attributes["data-budget"];
                 //Get the object for the selected department.
                 var courses = courseObject.Select(selectedValue);
                 //Bind the grid view to the collection of Course objects

@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs" Inherits="WebExample.Backend.Dashboard" %>
+<%@ Register TagPrefix="asp" Namespace="WebExample" Assembly="App_Code" %>
 
 <!DOCTYPE html>
 
@@ -68,8 +69,8 @@
         <div class="container">
             <div class="form-group">
 
-                <asp:DropDownList ID="ddlDepartments" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlDepartments_SelectedIndexChanged" AutoPostBack="True">
-                </asp:DropDownList>
+                <asp:DropDownListAttributes ID="ddlDepartments" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlDepartments_SelectedIndexChanged" AutoPostBack="True">
+                </asp:DropDownListAttributes>
 
             </div>
             <div class="form-group">

@@ -11,10 +11,10 @@ namespace MvcBusinessLogic.Installers
         {
             container.Register(Component.For<CourseController>());
             container.Register(Component.For<DepartmentController>());
-            container.Register(Component.For<SchoolEntities>().LifestyleTransient());
+            container.Register(Component.For<SchoolEntities>());
 
-            container.Register(Component.For<ICourseCrud>().ImplementedBy<CourseCrud>());
-            container.Register(Component.For<IDepartmentCrud>().ImplementedBy<DepartmentCrud>());
+            container.Register(Component.For<ICourseCrud>().ImplementedBy<CourseCrud>().LifestyleTransient());
+            container.Register(Component.For<IDepartmentCrud>().ImplementedBy<DepartmentCrud>().LifestyleTransient());
         }
     }
 }

@@ -6,7 +6,7 @@ using MvcBusinessLogic.Interfaces;
 
 namespace MvcBusinessLogic.Installers
 {
-    internal class DependenciesInstaller : IWindsorInstaller
+    public class DependenciesInstaller : IWindsorInstaller
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {

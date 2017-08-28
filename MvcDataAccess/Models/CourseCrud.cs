@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 
 namespace MvcDataAccess.Models
 {
-   
     public class CourseCrud : ICourseCrud
     {
 
@@ -42,15 +44,43 @@ namespace MvcDataAccess.Models
         {
             using (entities)
             {
-                var course = (from c in entities.Courses
-                              where c.CourseID == updatedCourse.CourseID
-                              select c).FirstOrDefault();
-                if (course == null) return false;
-                course.Title = updatedCourse.Title;
-                course.Credits = updatedCourse.Credits;
-                course.DepartmentID = updatedCourse.DepartmentID;
-                entities.SaveChanges();
-                return true;
+                try
+                {
+                    var course = (from c in entities.Courses
+                        where c.CourseID == updatedCourse.CourseID
+                        select c).FirstOrDefault();
+                    if (course == null) return false;
+                    course.Title = updatedCourse.Title;
+                    course.Credits = updatedCourse.Credits;
+                    course.DepartmentID = updatedCourse.DepartmentID;
+                    entities.SaveChanges();
+                    return true;
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    Console.WriteLine(dbUpdateException.Entries);
+                    return false;
+                }
+                catch (DbEntityValidationException dbEntityValidationException)
+                {
+                    Console.WriteLine(dbEntityValidationException.Message);
+                    return false;
+                }
+                catch (ArgumentNullException argumentNullException)
+                {
+                    Console.WriteLine(argumentNullException.Message);
+                    return false;
+                }
+                catch (InvalidOperationException invalidOperationException)
+                {
+                    Console.WriteLine(invalidOperationException.Message);
+                    return false;
+                }
+                catch (NotSupportedException notSupportedException)
+                {
+                    Console.WriteLine(notSupportedException.Message);
+                    return false;
+                }
             }
         }
     }
