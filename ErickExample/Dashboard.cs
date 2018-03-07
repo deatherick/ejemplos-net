@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Windows.Forms;
 using Castle.Windsor;
 using MvcBusinessLogic;
@@ -7,11 +9,22 @@ using MvcDataAccess.Models;
 
 namespace ErickExample
 {
+    public class MiMenu
+    {
+        public string Nombre { get; set; }
+        public List<MiMenu> SubMenus { get; set; }
+    }
     public partial class Dashboard : Form
     {
         public Dashboard()
         {
             InitializeComponent();
+            var menus = new List<MiMenu>
+            {
+                new MiMenu() {Nombre = "Primero"},
+                new MiMenu() {Nombre = "Segundo", SubMenus = new List<MiMenu>() { new MiMenu() {Nombre = "Tercero"} } },
+                new MiMenu() {Nombre = "Cuarto", SubMenus = new List<MiMenu>() { new MiMenu() {Nombre = "Quinto", SubMenus = new List<MiMenu>() { new MiMenu() {Nombre = "Sexto"} } } } }
+            };
             //Initialize the ObjectContext
             var container = new WindsorContainer();
             container.Install(
@@ -27,6 +40,8 @@ namespace ErickExample
             cmbDepartments.ValueMember = "DepartmentID";
             cmbDepartments.DisplayMember = "Name";
         }
+
+        //public void LlenarMenu(Itemmenu)
 
         private void Dashboard_FormClosed(object sender, FormClosedEventArgs e)
         {

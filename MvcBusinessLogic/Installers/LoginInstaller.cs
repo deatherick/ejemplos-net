@@ -12,14 +12,14 @@ namespace MvcBusinessLogic.Installers
         {
             container.Register(Component.For<LoginController>());
             container.Register(Component.For<HttpFileDownloader>());
-            //container.Register(Component.For<ILoginService>()
-            //    .ImplementedBy<LoginService>()
-            //    .Named("loginService")
-            //);
             container.Register(Component.For<ILoginService>()
-                .ImplementedBy<LoginServiceDuplicate>()
-                .Named("loginServiceDuplicate")
+                .ImplementedBy<LoginService>()
+                .Named("loginService")
             );
+            //container.Register(Component.For<ILoginService>()
+            //    .ImplementedBy<LoginServiceDuplicate>()
+            //    .Named("loginServiceDuplicate")
+            //);
             container.Register(Component.For<ISecurity>().ImplementedBy<Security>().LifestyleTransient());
         }
     }

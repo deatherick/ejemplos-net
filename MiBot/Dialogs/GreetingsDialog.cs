@@ -13,7 +13,7 @@ namespace MiBot.Dialogs
         [BestMatch(new[] { "Hola", "Buen dia", "Buen día", "Oye", "Buenos dias", "Que tal", "Saludos", "Buena mañana", "Buenas tardes", "Buenos días", "Buenas noches" })]
         public async Task WelcomeGreeting(IDialogContext context, string messageText)
         {
-            await context.PostAsync("Hola. ¿Como puedo ayudarte.");
+            await context.PostAsync("Hola. ¿Cómo puedo ayudarte?");
             context.Done(true);
         }
 

@@ -43,21 +43,19 @@ namespace MiBot.Dialogs
         public static IForm<RecolectaForm> BuildForm()
         {
             return new FormBuilder<RecolectaForm>()
-                .Field(nameof(PoseeCredito), validate: PreguntarEsCredito)
+                .Field(nameof(PoseeCredito))
                 .Field(nameof(CodigoDeCredito), active: PreguntarCodigo, validate: ValidarCodigoCredito)
-                .Field(nameof(Nombre), active: PreguntarNombre)
-                .Field(nameof(Direccion), active: PreguntarNombre)
+                .Field(nameof(Nombre), active: PreguntarDatos)
+                .Field(nameof(Direccion), active: PreguntarDatos)
                 .Field(nameof(FechaDeRecolecta), validate: ValidarFechaRecolecta)
-                //.Field(nameof(NumeroGuia), validate: ValidarGuia)
                 .AddRemainingFields(exclude: new [] {nameof(IdRecolecta)})
-                //.OnCompletion(ProcessOrder)
                 .Confirm("¿Estás seguro de continuar?")
                 .Build();
         }
 
         private static Task<ValidateResult> ValidarFechaRecolecta(RecolectaForm state, object response)
         {
-            var result = new ValidateResult()
+            var result = new ValidateResult
             {
                 IsValid = true,
                 Value = response
@@ -68,32 +66,11 @@ namespace MiBot.Dialogs
                 result.IsValid = false;
                 result.Feedback = "La hora que elegiste es menor a la hora actual";
             }
-            if (fecha.Date.Hour >= 17 || fecha.Date.Hour < 8)
+            if (fecha.Hour >= 17 || fecha.Hour < 8)
             {
                 result.IsValid = false;
                 result.Feedback = "Nuestros servicios de recolección trabajan de 8am a 4pm";
             }
-            return Task.FromResult(result);
-        }
-
-        private static Task<ValidateResult> PreguntarEsCredito(RecolectaForm state, object response)
-        {
-            var result = new ValidateResult();
-            if ((bool)response)
-            {
-                result.IsValid = true;
-                result.Value = true;
-            }
-            else
-            {
-                result.IsValid = true;
-                result.Value = false;
-            }
-            //else
-            //{
-            //    result.IsValid = false;
-            //    result.Feedback = "Lo siento no entendí tu respuesta \n\n* Respuestas:(Si, No)";
-            //}
             return Task.FromResult(result);
         }
 
@@ -116,6 +93,6 @@ namespace MiBot.Dialogs
 
         private static bool PreguntarCodigo(RecolectaForm state) => state.PoseeCredito;
 
-        private static bool PreguntarNombre(RecolectaForm state) => !state.PoseeCredito;
+        private static bool PreguntarDatos(RecolectaForm state) => !state.PoseeCredito;
     }
 }

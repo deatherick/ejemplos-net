@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -139,17 +140,27 @@ namespace MiBot.Dialogs
         {
             try
             {
+                var thumbnail = new HeroCard();
                 var feedback = await result;
+                thumbnail.Title = "Hemos encontrado la información de tu Guia";
+                thumbnail.Images = new[] { new CardImage("https://www.cargoexpreso.com/wp-content/uploads/2017/01/logo-4.png") };
+                thumbnail.Subtitle = $"*Guía:* {feedback.Guia.NumeroGuia}";
                 var replyMessage = string.Empty;
-                replyMessage += "Hemos encontrado la información de tu Guia: \n\n";
-                replyMessage += $"*Numero de guía:* {feedback.Guia.NumeroGuia} \n\n";
+                //replyMessage += "Hemos encontrado la información de tu Guia: \n\n";
+                //replyMessage += $"*Numero de guía:* {feedback.Guia.NumeroGuia} \n\n";
                 replyMessage += "*Estado:* Entregado \n\n";
                 replyMessage += $"*Remitente:* {feedback.Guia.RemitenteNombre} \n\n";
                 replyMessage += $"*Destinatario:* {feedback.Guia.DestinatarioNombre} \n\n";
                 replyMessage += $"*Acuse de recibido:* {feedback.Guia.PodNombre} {feedback.Guia.PodFecha} \n\n";
-                replyMessage += $"Puedes encontrar más información aquí: [Más Información]({CAEX_URL}/tracking/?guia={feedback.Guia.NumeroGuia})\n\n";
-                await context.PostAsync(replyMessage);
+                thumbnail.Text = replyMessage;
+                thumbnail.Buttons = new[] {new CardAction(ActionTypes.OpenUrl, "Más Información", value: $"{CAEX_URL}/tracking/?guia={feedback.Guia.NumeroGuia}")};
+                var reply = context.MakeMessage();
+                reply.Attachments.Add(thumbnail.ToAttachment());
+                reply.Attachments.Add(thumbnail.ToAttachment());
+                //replyMessage += $"Puedes encontrar más información aquí: [Más Información]({CAEX_URL}/tracking/?guia={feedback.Guia.NumeroGuia})\n\n";
+                await context.PostAsync(reply);
                 await context.PostAsync($"¿Hay algo más en lo que pueda ayudarte {feedback.Nombre}?");
+                //context.Wait(MessageReceivedAsync);
             }
             catch (FormCanceledException)
             {
@@ -170,10 +181,34 @@ namespace MiBot.Dialogs
             try
             {
                 var feedback = await result;
-                var replyMessage = string.Empty;
-                replyMessage += $"Tu recolecta ha sido programada, tu número de referencia es: *{feedback.IdRecolecta}*\n\n";
-                await context.PostAsync(replyMessage);
+                var receipt = new ReceiptCard
+                {
+                    Title = $"Referencia: *{feedback.IdRecolecta}*\n\n",
+                    Total = "Q275.00",
+                    Tax = "IVA Q25.00",
+                    Items = new List<ReceiptItem>(),
+                    Buttons = new [] { new CardAction(ActionTypes.OpenUrl, "Ver Factura", value: $"{CAEX_URL}/tracking/?invoice={feedback.IdRecolecta}")}
+                };
+                for (var i = 0; i < 2; i++)
+                {
+                    var item = new ReceiptItem
+                    {
+                        Title = feedback.TipoDeEnvio.ToString(),
+                        Subtitle = feedback.FechaDeRecolecta.ToString("hh tt", CultureInfo.InvariantCulture),
+                        Image = new CardImage("https://www.cargoexpreso.com/wp-content/uploads/2017/01/logo-4.png"),
+                        Price = "125.00",
+                        Quantity = "1",
+                        Text = "Por servicio de recolecta",
+                    };
+                    receipt.Items.Add(item);
+                }
+               
+                
+                var reply = context.MakeMessage();
+                reply.Attachments.Add(receipt.ToAttachment());
+                await context.PostAsync(reply);
                 await context.PostAsync($"¿Hay algo más en lo que pueda ayudarte {feedback.Nombre}?");
+
             }
             catch (FormCanceledException)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MiBot.DataAccess;
 using MiBot.Entities;
@@ -27,7 +28,7 @@ namespace MiBot.Dialogs
         public static IForm<GuiaForm> BuildForm()
         {
             return new FormBuilder<GuiaForm>()
-                .Field(nameof(PoseeCredito), validate: PreguntarEsCredito)
+                .Field(nameof(PoseeCredito))
                 .Field(nameof(CodigoDeCredito), active: PreguntarCodigo, validate: ValidarCodigoCredito)
                 .Field(nameof(Nombre), active: PreguntarNombre)
                 .Field(nameof(NumeroGuia), validate: ValidarGuia)
@@ -58,27 +59,6 @@ namespace MiBot.Dialogs
             return Task.FromResult(result);
         }
 
-        private static Task<ValidateResult> PreguntarEsCredito(GuiaForm state, object response)
-        {
-            var result = new ValidateResult();
-            if ((bool) response)
-            {
-                result.IsValid = true;
-                result.Value = true;
-            }
-            else
-            {
-                result.IsValid = true;
-                result.Value = false;
-            }
-            //else
-            //{
-            //    result.IsValid = false;
-            //    result.Feedback = "Lo siento no entendí tu respuesta \n\n* Respuestas:(Si, No)";
-            //}
-            return Task.FromResult(result);
-        }
-
         private static Task<ValidateResult> ValidarCodigoCredito(GuiaForm state, object response)
         {
             var result = new ValidateResult();
@@ -96,45 +76,21 @@ namespace MiBot.Dialogs
             return Task.FromResult(result);
         }
 
-        private static Task<ValidateResult> ValidateContactInformation(GuiaForm state, object response)
-        {
-            var result = new ValidateResult();
-            //string contactInfo = string.Empty;
-            //if (GetTwitterHandle((string)response, out contactInfo) || GetEmailAddress((string)response, out contactInfo))
-            //{
-            //    result.IsValid = true;
-            //    result.Value = contactInfo;
-            //}
-            //else
-            //{
-            //    result.IsValid = false;
-            //    result.Feedback = "You did not enter valid email address or twitter handle. Make sure twitter handle starts with @.";
-            //}
-            result.IsValid = false;
-            result.Feedback = "You did not enter valid email address or twitter handle. Make sure twitter handle starts with @.";
-
-            return Task.FromResult(result);
-        }
-
         private static bool PreguntarCodigo(GuiaForm state) => state.PoseeCredito;
 
         private static bool PreguntarNombre(GuiaForm state) => !state.PoseeCredito;
 
-        //private static bool PreguntarGuia(GuiaForm state) =>
-        //    !string.IsNullOrWhiteSpace(state.CodigoDeCredito)
-        //    && !string.IsNullOrWhiteSpace(state.Nombre);
+        private static readonly OnCompletionAsyncDelegate<GuiaForm> ProcessOrder = async (context, state) =>
+        {
+            await context.Forward(new OtherFormDialog(state), OnOtherFormProcessed, state, CancellationToken.None);
+        };
 
-        //private static readonly OnCompletionAsyncDelegate<GuiaForm> ProcessOrder = async (context, state) =>
-        //{
-        //    await context.Forward(new OtherFormDialog(state), OnOtherFormProcessed, state, CancellationToken.None);
-        //};
+        private static async Task OnOtherFormProcessed(IDialogContext context, IAwaitable<object> result)
+        {
+            var formValue = await result as GuiaForm;
 
-        //private static async Task OnOtherFormProcessed(IDialogContext context, IAwaitable<object> result)
-        //{
-        //    var formValue = await result as GuiaForm;
-
-        //    await context.PostAsync($"You are again in the form: Time: {formValue?.Nombre}, Number1: {formValue?.NumeroGuia}, Number2: {formValue?.CodigoDeCredito}");
-        //}
+            await context.PostAsync($"Datos proporcionados: Nombre: {formValue?.Nombre}, Número Guia: {formValue?.NumeroGuia}, Código Crédito: {formValue?.CodigoDeCredito}");
+        }
 
     }
 
