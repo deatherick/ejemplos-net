@@ -36,6 +36,7 @@ namespace MiBot.Dialogs
 
         public override async Task NoMatchHandler(IDialogContext context, string messageText)
         {
+            await context.PostAsync("No Match Handler");
             context.Done(false);
         }
 
