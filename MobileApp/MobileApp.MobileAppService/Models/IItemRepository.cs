@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace MobileApp.Models
+namespace MobileApp.MobileAppService.Models
 {
     public interface IItemRepository
     {

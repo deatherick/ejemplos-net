@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MobileApp.MobileAppService.Models;
 using Swashbuckle.AspNetCore.Swagger;
-
-using MobileApp.Models;
 
 namespace MobileApp.MobileAppService
 {
@@ -49,10 +47,10 @@ namespace MobileApp.MobileAppService
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/MobileAppService/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.Run(async (context) => await Task.Run(() => context.Response.Redirect("/swagger")));
+            app.Run(async (context) => await Task.Run(() => context.Response.Redirect("/MobileAppService/swagger")));
         }
     }
 }

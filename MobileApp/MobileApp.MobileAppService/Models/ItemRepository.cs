@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace MobileApp.Models
+namespace MobileApp.MobileAppService.Models
 {
     public class ItemRepository : IItemRepository
     {
-        private static ConcurrentDictionary<string, Item> items =
+        private static readonly ConcurrentDictionary<string, Item> Items =
             new ConcurrentDictionary<string, Item>();
 
         public ItemRepository()
@@ -18,39 +18,37 @@ namespace MobileApp.Models
 
         public Item Get(string id)
         {
-            return items[id];
+            return Items[id];
         }
 
         public IEnumerable<Item> GetAll()
         {
-            return items.Values;
+            return Items.Values;
         }
 
         public void Add(Item item)
         {
             item.Id = Guid.NewGuid().ToString();
-            items[item.Id] = item;
+            Items[item.Id] = item;
         }
 
         public Item Find(string id)
         {
-            Item item;
-            items.TryGetValue(id, out item);
+            Items.TryGetValue(id, out var item);
 
             return item;
         }
 
         public Item Remove(string id)
         {
-            Item item;
-            items.TryRemove(id, out item);
+            Items.TryRemove(id, out var item);
 
             return item;
         }
 
         public void Update(Item item)
         {
-            items[item.Id] = item;
+            Items[item.Id] = item;
         }
     }
 }

@@ -11,15 +11,14 @@ namespace MobileApp.Services
 {
     public class AzureDataStore : IDataStore<Item>
     {
-        HttpClient client;
-        IEnumerable<Item> items;
+        private readonly HttpClient _client;
+        private IEnumerable<Item> _items;
 
         public AzureDataStore()
         {
-            client = new HttpClient();
-            client.BaseAddress = new Uri($"{App.AzureBackendUrl}/");
+            _client = new HttpClient {BaseAddress = new Uri($"{App.AzureBackendUrl}/")};
 
-            items = new List<Item>();
+            _items = new List<Item>();
         }
 
         bool IsConnected => Connectivity.NetworkAccess == NetworkAccess.Internet;
@@ -27,18 +26,18 @@ namespace MobileApp.Services
         {
             if (forceRefresh && IsConnected)
             {
-                var json = await client.GetStringAsync($"api/item");
-                items = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<Item>>(json));
+                var json = await _client.GetStringAsync($"api/item");
+                _items = await Task.Run(() => JsonConvert.DeserializeObject<IEnumerable<Item>>(json));
             }
 
-            return items;
+            return _items;
         }
 
         public async Task<Item> GetItemAsync(string id)
         {
             if (id != null && IsConnected)
             {
-                var json = await client.GetStringAsync($"api/item/{id}");
+                var json = await _client.GetStringAsync($"api/item/{id}");
                 return await Task.Run(() => JsonConvert.DeserializeObject<Item>(json));
             }
 
@@ -52,7 +51,7 @@ namespace MobileApp.Services
 
             var serializedItem = JsonConvert.SerializeObject(item);
 
-            var response = await client.PostAsync($"api/item", new StringContent(serializedItem, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync($"api/item", new StringContent(serializedItem, Encoding.UTF8, "application/json"));
 
             return response.IsSuccessStatusCode;
         }
@@ -66,7 +65,7 @@ namespace MobileApp.Services
             var buffer = Encoding.UTF8.GetBytes(serializedItem);
             var byteContent = new ByteArrayContent(buffer);
 
-            var response = await client.PutAsync(new Uri($"api/item/{item.Id}"), byteContent);
+            var response = await _client.PutAsync(new Uri($"api/item/{item.Id}"), byteContent);
 
             return response.IsSuccessStatusCode;
         }
@@ -76,7 +75,7 @@ namespace MobileApp.Services
             if (string.IsNullOrEmpty(id) && !IsConnected)
                 return false;
 
-            var response = await client.DeleteAsync($"api/item/{id}");
+            var response = await _client.DeleteAsync($"api/item/{id}");
 
             return response.IsSuccessStatusCode;
         }

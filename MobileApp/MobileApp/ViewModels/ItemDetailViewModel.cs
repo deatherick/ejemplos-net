@@ -1,6 +1,4 @@
-﻿using System;
-
-using MobileApp.Models;
+﻿using MobileApp.Models;
 
 namespace MobileApp.ViewModels
 {

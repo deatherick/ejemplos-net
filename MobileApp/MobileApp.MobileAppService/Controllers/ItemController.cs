@@ -1,31 +1,30 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using MobileApp.MobileAppService.Models;
 
-using MobileApp.Models;
-
-namespace MobileApp.Controllers
+namespace MobileApp.MobileAppService.Controllers
 {
     [Route("api/[controller]")]
     public class ItemController : Controller
     {
 
-        private readonly IItemRepository ItemRepository;
+        private readonly IItemRepository _itemRepository;
 
         public ItemController(IItemRepository itemRepository)
         {
-            ItemRepository = itemRepository;
+            _itemRepository = itemRepository;
         }
 
         [HttpGet]
         public IActionResult List()
         {
-            return Ok(ItemRepository.GetAll());
+            return Ok(_itemRepository.GetAll());
         }
 
         [HttpGet("{id}")]
         public Item GetItem(string id)
         {
-            Item item = ItemRepository.Get(id);
+            Item item = _itemRepository.Get(id);
             return item;
         }
 
@@ -39,7 +38,7 @@ namespace MobileApp.Controllers
                     return BadRequest("Invalid State");
                 }
 
-                ItemRepository.Add(item);
+                _itemRepository.Add(item);
 
             }
             catch (Exception)
@@ -58,7 +57,7 @@ namespace MobileApp.Controllers
                 {
                     return BadRequest("Invalid State");
                 }
-                ItemRepository.Update(item);
+                _itemRepository.Update(item);
             }
             catch (Exception)
             {
@@ -70,7 +69,7 @@ namespace MobileApp.Controllers
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
-            ItemRepository.Remove(id);
+            _itemRepository.Remove(id);
         }
     }
 }
